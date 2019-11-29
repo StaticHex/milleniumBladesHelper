@@ -1,7 +1,7 @@
 [
     {
       "name": "Base Set",
-      "player profiles": [
+      "character profiles": [
         "Cardine Kolleckta",
         "Deques Applenti",
         "Fulton Suitcase",
@@ -70,7 +70,7 @@
     },
     {
       "name": "Set Rotation",
-      "player profiles": [
+      "character profiles": [
         "Cardinal Baanz",
         "Friendly Alien Lettstrade",
         "Pritchard Leftfield",
@@ -123,7 +123,7 @@
     },
     {
       "name": "Crossover: Mini Expansion #1",
-      "player profiles": [],
+      "character profiles": [],
       "starter decks": [],
       "bronze promos": [
         "7-Card Slugfest",
@@ -146,7 +146,7 @@
     },
     {
       "name": "Sponsors: Mini Expansion #2",
-      "player profiles": [],
+      "character profiles": [],
       "starter decks": [],
       "bronze promos": [
         "Frame Wars: Pilots",
@@ -167,7 +167,7 @@
     },
     {
       "name": "Fusion Chaos: Mini Expansion #3",
-      "player profiles": [
+      "character profiles": [
         "Raritti Sikarh",
         "Shafille DuCarte"
       ],
@@ -185,7 +185,7 @@
     },
     {
       "name": "Final Bosses: Mini Expansion #4",
-      "player profiles": [],
+      "character profiles": [],
       "starter decks": [],
       "bronze promos": [],
       "silver promos": [],
@@ -201,7 +201,7 @@
     },
     {
       "name": "Futures: Mini Expansion #5",
-      "player profiles": [],
+      "character profiles": [],
       "starter decks": [],
       "bronze promos": [
         "Esper X Humans",
@@ -224,7 +224,7 @@
     },
     {
       "name": "Professionals: Mini Expansion #6",
-      "player profiles": [
+      "character profiles": [
         "Protor Von Granprie",
         "Greline Alcartone"
       ],
