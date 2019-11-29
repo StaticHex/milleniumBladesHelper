@@ -1,0 +1,243 @@
+[
+    {
+      "name": "Base Set",
+      "player profiles": [
+        "Cardine Kolleckta",
+        "Deques Applenti",
+        "Fulton Suitcase",
+        "Morrey Caardman",
+        "Power Creep",
+        "Shur Wen Na"
+      ],
+      "starter decks": [
+        "Bluelake Village",
+        "Brownwall City",
+        "Chateau Helbane",
+        "Greendew Bazaar",
+        "Redhill Mercenaries",
+        "Saints of Whiteholme"
+      ],
+      "bronze promos": [
+        "Elemental Blades",
+        "Leave it to Backers",
+        "Legend of Final Badass",
+        "The Backer Bunch"
+      ],
+      "silver promos": [
+        "Backer Meets World",
+        "Princess’ Blade",
+        "Sealed Vaults"
+      ],
+      "gold promos": [
+        "Backers in Charge",
+        "Elemental Dragon Lords",
+        "Millennium Accessories"
+      ],
+      "expansion packs": [
+        "1001 Nights",
+        "Anvilicious Arrangements",
+        "Black Flags, Black Waters",
+        "Fists of Steel",
+        "Gno-Mans Land",
+        "Lightning Bug",
+        "Obari As Hell",
+        "Rubber Ducky Maid Crusaders R",
+        "Samurai Mowdown",
+        "Sunset Striders",
+        "Super Plumber Bros."
+      ],
+      "premium packs": [
+        "AD 2400",
+        "Cards From the Crypt",
+        "Cards Magica",
+        "Clockwork Empire",
+        "Legend of Tanananah",
+        "Mouse Card",
+        "Pandora’s Box Opened",
+        "Underlords of Metropolitam",
+        "Xeno X-Over"
+      ],
+      "master packs": [
+        "006 Plus One",
+        "Fantasy Finale MCLXVH-2",
+        "Galactic Caboose",
+        "Hell to Pay",
+        "M.N.M.",
+        "Millennium Masters",
+        "Symphony of Destruction",
+        "Vex: Cards of Hate"
+      ]
+    },
+    {
+      "name": "Set Rotation",
+      "player profiles": [
+        "Cardinal Baanz",
+        "Friendly Alien Lettstrade",
+        "Pritchard Leftfield",
+        "The Card Shark"
+      ],
+      "starter decks": [
+        "Animal Farm",
+        "Future Perfect",
+        "Gods and Myths",
+        "Megalopolis",
+        "The Academy",
+        "The Great War"
+      ],
+      "bronze promos": [
+        "Argent Supporters",
+        "Backers in the House",
+        "Halloween Spook-tacular",
+        "War of Indines",
+        "World of EarthCraft"
+      ],
+      "silver promos": [
+        "Argent Voters",
+        "Backers in the Middle",
+        "Devastion of Indines",
+        "Wandering Warriors"
+      ],
+      "gold promos": [
+        "Argent Candidates",
+        "Fate of Indines",
+        "Everybody Loves Backers"
+      ],
+      "expansion packs": [
+        "Fast",
+        "Quantum Jump",
+        "Saved by the 90's",
+        "The Thousand-Pixel Cabinet",
+        "Uuurgh!"
+      ],
+      "premium packs": [
+        "Deus Rex Machina",
+        "Developmental Issues",
+        "Game of Rings",
+        "Shonen Leap"
+      ],
+      "master packs": [
+        "Penny Dreadful",
+        "The Ultimate Steel Cook",
+        "Ultimate Kaiju Throwdown"
+      ]
+    },
+    {
+      "name": "Crossover: Mini Expansion #1",
+      "player profiles": [],
+      "starter decks": [],
+      "bronze promos": [
+        "7-Card Slugfest",
+        "Anansi and the Box of Stories",
+        "Sellswords"
+      ],
+      "silver promos": [
+        "Grimoire Shuffle",
+        "Master Plan",
+        "Power Play",
+        "Variant Souls"
+      ],
+      "gold promos": [
+        "Commedia Del Arte",
+        "Mystic Empyrean"
+      ],
+      "expansion packs": [],
+      "premium packs": [],
+      "master packs": []
+    },
+    {
+      "name": "Sponsors: Mini Expansion #2",
+      "player profiles": [],
+      "starter decks": [],
+      "bronze promos": [
+        "Frame Wars: Pilots",
+        "Heroes Wanted"
+      ],
+      "silver promos": [
+        "Frame Wars: Frames",
+        "Neuroshima Hex! 3.0",
+        "Red Horizon"
+      ],
+      "gold promos": [
+        "Mage Wars",
+        "Terrene Odssey"
+      ],
+      "expansion packs": [],
+      "premium packs": [],
+      "master packs": []
+    },
+    {
+      "name": "Fusion Chaos: Mini Expansion #3",
+      "player profiles": [
+        "Raritti Sikarh",
+        "Shafille DuCarte"
+      ],
+      "starter decks": [],
+      "bronze promos": [
+        "Elemental Gem Power"
+      ],
+      "silver promos": [
+        "Master Fusion Gems"
+      ],
+      "gold promos": [],
+      "expansion packs": [],
+      "premium packs": [],
+      "master packs": []
+    },
+    {
+      "name": "Final Bosses: Mini Expansion #4",
+      "player profiles": [],
+      "starter decks": [],
+      "bronze promos": [],
+      "silver promos": [],
+      "gold promos": [],
+      "expansion packs": [],
+      "premium packs": [],
+      "master packs": [
+        "Eldritch Entertainment Group",
+        "Return of the Druid Kings",
+        "TCG-lluminati",
+        "They Came From Space"
+      ]
+    },
+    {
+      "name": "Futures: Mini Expansion #5",
+      "player profiles": [],
+      "starter decks": [],
+      "bronze promos": [
+        "Esper X Humans",
+        "Professor Treasure's Secret Sky Castle",
+        "Seventh Cross Heroes"
+      ],
+      "silver promos": [
+        "Ballistic Reign",
+        "Esper X Espers",
+        "Seventh Cross Villains"
+      ],
+      "gold promos": [
+        "Sellswords Olympus",
+        "Tomb Trader",
+        "Trial of Indines"
+      ],
+      "expansion packs": [],
+      "premium packs": [],
+      "master packs": []
+    },
+    {
+      "name": "Professionals: Mini Expansion #6",
+      "player profiles": [
+        "Protor Von Granprie",
+        "Greline Alcartone"
+      ],
+      "starter decks": [],
+      "bronze promos": [],
+      "silver promos": [],
+      "gold promos": [],
+      "expansion packs": [
+        "Mystic: The Reckoning"
+      ],
+      "premium packs": [],
+      "master packs": [
+        "The Sports Set"
+      ]
+    }
+  ]
