@@ -30,9 +30,12 @@ class AddPlayerUI(Player, BaseWidget):
     global loader
     global players
 
-    def __init__(self):
+    def __init__(self, checkedList):
         Player.__init__(self, '','','')
         BaseWidget.__init__(self,'Add New Player')
+
+        # Init local vars
+        self.__checked = checkedList
 
         # Init UI Elements
         self._txtPlayerName         = ControlText('Player Name')
@@ -44,8 +47,8 @@ class AddPlayerUI(Player, BaseWidget):
         self._btnAddPlayer.value    = self.__onAddPlayerClick
 
         # Populate Character Names and Starter Decks
-        characters = loader.getFilteredList(MBType.CHARACTER)
-        decks = loader.getFilteredList(MBType.STARTER)
+        characters = loader.getFilteredList(MBType.CHARACTER, self.__checked)
+        decks = loader.getFilteredList(MBType.STARTER, self.__checked)
         for char in characters:
             self._cboCharacterName.add_item(char, char)
         for deck in decks:
@@ -71,8 +74,9 @@ class AddPlayerUI(Player, BaseWidget):
 # Displays a small window for randomly generating new players to the game
 class GeneratePlayersUI(BaseWidget):
     global loader
-    def __init__(self):
+    def __init__(self, checkedList):
         BaseWidget.__init__(self,'Generate Players')
+        self.__checked = checkedList
 
         # Init UI Components
         self.txtP1Name      = ControlText("Player 1 Name:")
@@ -93,8 +97,8 @@ class GeneratePlayersUI(BaseWidget):
         seed(datetime.now())
         for name in names:
             if name != "":
-                characters = loader.getFilteredList(MBType.CHARACTER)
-                decks = loader.getFilteredList(MBType.STARTER)
+                characters = loader.getFilteredList(MBType.CHARACTER, self.__checked)
+                decks = loader.getFilteredList(MBType.STARTER, self.__checked)
                 charIdx = randint(0, len(characters) - 1)
                 deckIdx = randint(0, len(decks) - 1)
                 players.append(Player(name, characters[charIdx], decks[deckIdx]))
@@ -468,9 +472,6 @@ class MBUI(BaseWidget):
         self._btnRemPl      = ControlButton('Remove Selected Player')
         self._btnGenPl      = ControlButton('Generate Player Setup')
 
-        # Player Setup Tab -- Init Class Vars
-        self.__players      = [] # A list of players, uses the Player class
-
         # Player Setup Tab -- Set up properties of UI elements, attach callbacks, etc.
         self._lstPlayers.horizontal_headers = ['Name', 'Character', 'Starter Deck']
         self._btnAddPl.value = self.__onAddPlayerClick
@@ -530,17 +531,17 @@ class MBUI(BaseWidget):
 
     # Player Setup Tab -- Button Callbacks
     def __onAddPlayerClick(self):
-        win = AddPlayerUI()
+        win = AddPlayerUI(self._chkArea.checked_indexes)
         win.parent = self
+        win.show()
     
     def __onRemoveSelectedPlayerClick(self):
         self._lstPlayers -= self._lstPlayers.selected_row_index
 
     def __onGeneratePlayerSetupClick(self):
         loader.clearPlayerSetup()
-        for i in range(0, len(self.__players)):
-            self._lstPlayers -= i
-        win = GeneratePlayersUI()
+        self._lstPlayers.clear()
+        win = GeneratePlayersUI(self._chkArea.checked_indexes)
         win.parent = self
         win.show()
 
@@ -553,10 +554,11 @@ class MBUI(BaseWidget):
         tournament = ""
         seed(datetime.now())
         loader.clearStoreSetup()
+        self._lstStore.clear()
 
         # Randomly select expansion sets and add to store
         for _ in range(0, 5):
-            expansions = loader.getFilteredList(MBType.EXPANSION)
+            expansions = loader.getFilteredList(MBType.EXPANSION, self._chkArea.checked_indexes)
             exIdx = randint(0, len(expansions) - 1)
             expansion += expansions[exIdx]+', '
             loader.markSetChosen(expansions[exIdx])
@@ -565,7 +567,7 @@ class MBUI(BaseWidget):
 
         # Randomly select premium sets and add to store
         for _ in range(0, 4):
-            premiums = loader.getFilteredList(MBType.PREMIUM)
+            premiums = loader.getFilteredList(MBType.PREMIUM, self._chkArea.checked_indexes)
             preIdx = randint(0, len(premiums) - 1)
             premium += premiums[preIdx]+', '
             loader.markSetChosen(premiums[preIdx])
@@ -574,7 +576,7 @@ class MBUI(BaseWidget):
 
         # Randomly select master sets and add to store
         for _ in range(0, 3):
-            masters = loader.getFilteredList(MBType.MASTER)
+            masters = loader.getFilteredList(MBType.MASTER, self._chkArea.checked_indexes)
             masIdx = randint(0, len(masters) - 1)
             master += masters[masIdx]+', '
             loader.markSetChosen(masters[masIdx])
@@ -582,9 +584,9 @@ class MBUI(BaseWidget):
         self._lstStore += ['Master Sets\t\t', master]
 
         # Randomly select fusion area sets and add to store
-        fusionBronze    = loader.getFilteredList(MBType.BRONZE)
-        fusionSilver    = loader.getFilteredList(MBType.SILVER)
-        fusionGold      = loader.getFilteredList(MBType.GOLD)
+        fusionBronze    = loader.getFilteredList(MBType.BRONZE, self._chkArea.checked_indexes)
+        fusionSilver    = loader.getFilteredList(MBType.SILVER, self._chkArea.checked_indexes)
+        fusionGold      = loader.getFilteredList(MBType.GOLD, self._chkArea.checked_indexes)
         fbIdx = randint(0, len(fusionBronze) - 1)
         fsIdx = randint(0, len(fusionSilver) - 1)
         fgIdx = randint(0, len(fusionGold) - 1)
@@ -597,8 +599,8 @@ class MBUI(BaseWidget):
         self._lstStore += ['Fusion Area Sets\t\t', fusion]
 
         # Randomly select tournament prizes and add to store
-        tournamentBronze = loader.getFilteredList(MBType.BRONZE)
-        tournamentSilver = loader.getFilteredList(MBType.SILVER)
+        tournamentBronze = loader.getFilteredList(MBType.BRONZE, self._chkArea.checked_indexes)
+        tournamentSilver = loader.getFilteredList(MBType.SILVER, self._chkArea.checked_indexes)
         tbIdx = randint(0, len(tournamentBronze) - 1)
         tsIdx = randint(0, len(tournamentSilver) - 1)
         tournament = '(Bronze) '+tournamentBronze[tbIdx]+', '

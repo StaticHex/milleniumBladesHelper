@@ -40,13 +40,27 @@ class SetLoader:
                 if cardSet.name == setName:
                     cardSet.chosen = True
 
-    def getFilteredList(self, setType=MBType.UNDEFINED):
+    def getFilteredList(self, setType=MBType.UNDEFINED, filters=[]):
+        # Add 1 to each filter's index to account for 0 being UNDEFINED
+        filters = [x + 1 for x in filters]
+
+        # Convert numeric indicies into enum names
+        allowedSets = []
+        for mtype in MBSet:
+            for fil in filters:
+                if fil == mtype.value:
+                    allowedSets.append(mtype.name)
+
+        # Get filtered results
         filteredList = []
         for setName in self.setDict:
-            for item in self.setDict[setName]:
-                if item.getCardType() == setType:
-                    if not item.chosen:
-                        filteredList.append(item.name)
+            if setName in allowedSets:
+                for item in self.setDict[setName]:
+                    if item.getCardType() == setType:
+                        if not item.chosen:
+                            filteredList.append(item.name)
+        
+        # Return filtered list
         return filteredList
     
     def clearPlayerSetup(self):
