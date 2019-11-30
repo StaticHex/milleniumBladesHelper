@@ -33,3 +33,32 @@ class SetLoader:
                         if enumSetName not in self.setDict:
                             self.setDict[enumSetName] = []
                         self.setDict[enumSetName].append(newCard)
+
+    def markSetChosen(self, setName):
+        for curSetName in self.setDict:
+            for cardSet in self.setDict[curSetName]:
+                if cardSet.name == setName:
+                    cardSet.chosen = True
+
+    def getFilteredList(self, setType=MBType.UNDEFINED):
+        filteredList = []
+        for setName in self.setDict:
+            for item in self.setDict[setName]:
+                if item.getCardType() == setType:
+                    if not item.chosen:
+                        filteredList.append(item.name)
+        return filteredList
+    
+    def clearPlayerSetup(self):
+        for curSetName in self.setDict:
+            for cardSet in self.setDict[curSetName]:
+                if cardSet.getCardType() == MBType.CHARACTER or \
+                    cardSet.getCardType() == MBType.STARTER:
+                    cardSet.chosen = False
+
+    def clearStoreSetup(self):
+        for curSetName in self.setDict:
+            for cardSet in self.setDict[curSetName]:
+                if cardSet.getCardType() != MBType.CHARACTER or \
+                    cardSet.getCardType() != MBType.STARTER:
+                    cardSet.chosen = False

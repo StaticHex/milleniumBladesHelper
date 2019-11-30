@@ -4,6 +4,10 @@
 #### **Completed On:** --/--/----
 #### **Last Updated:** --/--/----
 ---
+#### Dependencies (i.e. things to run pip for)
+pyforms
+playsound
+---
 #### Changelog
 
 Nothing here until this upgrades from 1.0
