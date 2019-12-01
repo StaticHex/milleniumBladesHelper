@@ -73,10 +73,18 @@ class AddPlayerUI(Player, BaseWidget):
 # --------------------------------------------------------------------------------
 # Displays a small window for randomly generating new players to the game
 class GeneratePlayersUI(BaseWidget):
+    # pass in global vars:
     global loader
+
+    # Default Constructor
+    # --------------------------------------------------------------------------------
+    # Primarily used to define and setup UI components
     def __init__(self, checkedList):
+        # Call constructors for super classes
         BaseWidget.__init__(self,'Generate Players')
-        self.__checked = checkedList
+
+        # init local vars
+        self.__checked      = checkedList # List of expansions which are enabled
 
         # Init UI Components
         self.txtP1Name      = ControlText("Player 1 Name:")
@@ -89,22 +97,41 @@ class GeneratePlayersUI(BaseWidget):
         # Set up properties of UI elements, attach callbacks etc.
         self.btnGen.value   = self.__onGenPlayerClick
 
-    # Button Action Callback
+    # Button Action Callbacks
     def __onGenPlayerClick(self):
-        names = [self.txtP1Name.value,self.txtP2Name.value, self.txtP3Name.value,
-                 self.txtP4Name.value, self.txtP5Name.value]
-        players = []
+        # init local vars
+        names       = [
+            self.txtP1Name.value,
+            self.txtP2Name.value, 
+            self.txtP3Name.value,
+            self.txtP4Name.value, 
+            self.txtP5Name.value
+        ] # Hold the name of each player
+        players     = [] # Our list of player objects to pass into our multi-add function
+
+        # Seed the random number generator
         seed(datetime.now())
+
+        # Generate players
         for name in names:
             if name != "":
-                characters = loader.getFilteredList(MBType.CHARACTER, self.__checked)
-                decks = loader.getFilteredList(MBType.STARTER, self.__checked)
-                charIdx = randint(0, len(characters) - 1)
-                deckIdx = randint(0, len(decks) - 1)
+                # Load in all allowed characters and starter decks remaining
+                characters  = loader.getFilteredList(MBType.CHARACTER, self.__checked)
+                decks       = loader.getFilteredList(MBType.STARTER, self.__checked)
+
+                # Grab a random character and deck for the current player
+                charIdx     = randint(0, len(characters) - 1)
+                deckIdx     = randint(0, len(decks) - 1)
+
+                # Create a new player object to add to our player list
                 players.append(Player(name, characters[charIdx], decks[deckIdx]))
+
+                # Mark deck and character as chosen
                 loader.markSetChosen(characters[charIdx])
                 loader.markSetChosen(decks[deckIdx])
 
+        # If this has a parent, pass the generated list to it (should target our
+        # instance of MBUI)
         if self.parent!=None: self.parent.addMultiPlayer(players, self)
     
 
@@ -112,14 +139,27 @@ class GeneratePlayersUI(BaseWidget):
 # --------------------------------------------------------------------------------
 # Class which sets up the score sheet for each player as well as the round timers
 class ScoringUI(BaseWidget):
+    # pass in global vars:
     global timerThread
 
+    # Default Constructor
+    # --------------------------------------------------------------------------------
+    # Primarily used to define and setup UI components and class vars
     def __init__(self, playerList):
+        # Call constructors for super classes
         BaseWidget.__init__(self, "Players")
-        self.__playerList = playerList
-        self.__timerStarted = False
-        self.__timerPaused = False
-        self.__activeBtn = None
+
+        # init class vars
+        self.__playerList       = playerList # List of defined players
+
+        self.__timerStarted     = False # True if one of the round timers is running
+
+        self.__timerPaused      = False # True if one of the round timers is paused
+
+        self.__activeBtn        = None # Holds a reference to one of the timer
+                                       # buttons and is used to make clicking each
+                                       # button mutually exclusive among shared
+                                       # functions
 
         # Init UI Components for Round 1 Deckbuilding
         self._lblR1DB           = ControlLabel("Round 1 Deckbuilding")
@@ -305,7 +345,127 @@ class ScoringUI(BaseWidget):
             ('_txtTotPlayer1','_txtTotPlayer2','_txtTotPlayer3','_txtTotPlayer4','_txtTotPlayer5'),
             '_btnCalcTotal'
         ]
-    
+
+    # Adjust Text Fields Method
+    # --------------------------------------------------------------------------------
+    # Used to adjust groups of player text fields on the scoring sheet. This function
+    # hides all fields which are unassigned to players and also disables text entry
+    # if an optional flag is passed in. This is defined to avoid writing a bunch
+    # of redundant code.   
+    def __adjustTextFields(self, fields, disableGroup = False):
+        for f in fields:
+            if disableGroup:
+                f.enabled = False
+            f.hide()
+        
+        for i in range(0, len(self.__playerList)):
+            fields[i].label = self.__playerList[i].name
+            fields[i].show()
+
+    # Tally All Method
+    # --------------------------------------------------------------------------------
+    # This is a stub function which takes in a 2d array for inputs and a 1d array
+    # as an output. This calls the Tally Score method for each group of inputs
+    # and stores it in an appropriate output. This is used to total the score for all
+    # players
+    def __tallyAll(self, inputs, outputs):
+        for i in range(0, len(self.__playerList)):
+            self.__tallyScore(inputs[i],outputs[i])
+
+    # Tally Score Method
+    # --------------------------------------------------------------------------------
+    # Sums the values for all passed inputs and stores them in the passed output's
+    # value field. It is assumed that both inputs and output are ControlText pyform
+    # objects.   
+    def __tallyScore(self, inputs, output):
+        # init local vars:
+        totalScore = 0 # The summed up score for all inputs
+
+        # loop over inputs
+        for inp in inputs:
+            # If the text field is empty, assign 0 to it
+            if inp.value == "":
+                inp.value = '0'
+            totalScore += int(inp.value)
+        
+        # Convert total score to a string and put it in the output field
+        output.value = str(totalScore)
+
+    # Start Phase Method
+    # --------------------------------------------------------------------------------
+    # This method is called by all the timerButton callbacks and is used to initialize
+    # and start a new thread with a timer for the corresponding phase.
+    def __startPhase(self, phaseButton, phase=1):
+        # Only do stuff if there is either not an active button or if this is the
+        # active button.
+        if self.__activeBtn == None or self.__activeBtn == phaseButton:
+            # If the timer hasn't been started yet, mark it as started, start a new
+            # async thread for the timer, and set the active button as this button
+            if self.__timerStarted == False:
+                    self.__timerStarted = True
+                    timerThread         = Thread(
+                                            target=self.__phaseThread, 
+                                            args=(phaseButton,phase)
+                                        )
+                    timerThread.start()
+                    self.__activeBtn    = phaseButton
+            else:
+                # if the timer is started, and we aren't paused, pause the timer. If
+                # we ARE paused, unpause the timer.
+                if self.__timerPaused == False:
+                    self.__timerPaused = True
+                else:
+                    self.__timerPaused = False
+
+    # Phase Thread Method
+    # --------------------------------------------------------------------------------
+    # This method is the method which is attached to our async thread and controls the
+    # ticking of the phase timer for a given UI button.  
+    def __phaseThread(self, phaseButton, phase=1):
+        # init local vars
+        startTime   = datetime.now().timestamp() # Set start time as current time
+        current     = startTime # Set current time as equal to start time
+        dt          = 0 # Set dt as 0 to start, no need to do calculations
+        pMin        = 7 # Set starting number of minutes as 7
+        pSec        = 0 # Set starting number of seconds as 0
+
+        # If we're on phase 3, set number of minutes to 6 vs. 7
+        if phase == 3:
+            pMin -= 1
+
+        # Continue ticking as long as our timer hasn't expired
+        while((pMin+pSec) > 0):
+            # Tick once per second (it's a stopwatch)
+            if dt > 1 and self.__timerPaused == False:
+                # Reset start time
+                startTime = datetime.now().timestamp()
+
+                # Adjust minutes and seconds accordingly
+                pSec -= 1
+                if pSec < 0:
+                    pMin -= 1
+                    pSec = 59
+                
+                # Create new label for button
+                timeStr = str(pMin)+':'
+                if pSec < 10:
+                    timeStr += '0'
+                timeStr += str(pSec)
+                phaseButton.label = timeStr
+            
+            # Update current time and calculate new dt in preparation for
+            # next loop interval
+            current = datetime.now().timestamp()
+            dt = current - startTime
+
+        # Cleanup for timer expired
+        self.__timerStarted = False # Set timer started to false
+        phaseButton.hide() # Hide the expired timer
+        playsound('./bell.mp3') # Play a chime to let users know timer expired
+        self.__activeBtn = None # Clear out active button
+        timerThread.join() # Join this to main thread so it doesn't block
+
+    # Button click callbacks
     def __onRound1Phase1Click(self):
         self.__startPhase(self._btnR1Timer1, 1)
     
@@ -388,78 +548,20 @@ class ScoringUI(BaseWidget):
             self._txtTotPlayer4,
             self._txtTotPlayer5,
         ])
-    
-    def __adjustTextFields(self, fields, disableGroup = False):
-        for f in fields:
-            if disableGroup:
-                f.enabled = False
-            f.hide()
-        
-        for i in range(0, len(self.__playerList)):
-            fields[i].label = self.__playerList[i].name
-            fields[i].show()
-    
-    def __tallyAll(self, inputs, outputs):
-        for i in range(0, len(self.__playerList)):
-            self.__tallyScore(inputs[i],outputs[i])
-
-    def __tallyScore(self, inputs, output):
-        score = 0
-        for inp in inputs:
-            if inp.value == "":
-                inp.value = '0'
-            score += int(inp.value)
-        output.value = str(score)
-
-    def __startPhase(self, phaseButton, phase=1):
-        if self.__activeBtn == None or self.__activeBtn == phaseButton:
-            if self.__timerStarted == False:
-                    self.__timerStarted = True
-                    timerThread = Thread(target=self.__phaseThread, args=(phaseButton,phase))
-                    timerThread.start()
-                    self.__activeBtn = phaseButton
-            else:
-                if self.__timerPaused == False:
-                    self.__timerPaused = True
-                else:
-                    self.__timerPaused = False
-    
-    def __phaseThread(self, phaseButton, phase=1):
-        startTime = datetime.now().timestamp()
-        current = startTime
-        pMin = 7
-        pSec = 0
-        if phase == 3:
-            pMin -= 1
-        dt = startTime - current
-        while((pMin+pSec) > 0):
-            if dt > 1 and self.__timerPaused == False:
-                startTime = datetime.now().timestamp()
-                pSec -= 1
-                if pSec < 0:
-                    pMin -= 1
-                    pSec = 59
-                timeStr = str(pMin)+':'
-                if pSec < 10:
-                    timeStr += '0'
-                timeStr += str(pSec)
-                phaseButton.label = timeStr
-            current = datetime.now().timestamp()
-            dt = current - startTime
-        self.__timerStarted = False
-        phaseButton.hide()
-        playsound('./bell.mp3')
-        self.__activeBtn = None
-        timerThread.join()
 
 
 # Millennium Blades UI Class
 # --------------------------------------------------------------------------------
-# A class to hold all the UI components for our program
+# A class to hold all the UI components for the main form. This is the class from
+# Which all other UI classes and windows are called from.
 class MBUI(BaseWidget):
+    # pass in global vars
     global loader
     global timerThread
-    
+
+    # Default Constructor
+    # --------------------------------------------------------------------------------
+    # Primarily used to create and set up UI components and class variables.
     def __init__(self):
         # Class Vars:
         self.__players = [] # List of players
@@ -514,15 +616,30 @@ class MBUI(BaseWidget):
             '3. Scoring':['_scoringPanel','_btnGetScoring'],
             '4. Set Selection':['_chkArea']
         }]
-    
+
+    # Add Player Method
+    # --------------------------------------------------------------------------------
+    # Used to add a single player to the list of players in the Player Setup tab.   
     def addPlayer(self, player):
+        # Add player to list
         self._lstPlayers += [player.name+'\t\t', player.character+'\t\t', player.deck]
+
+        # Mark deck and character player chose as chosen
         loader.markSetChosen(player.character)
         loader.markSetChosen(player.deck)
+
+        # Append player to list of players
         self.__players.append(player)
+
+        # Close the choose player UI
         player.close()
-        print('stopping here')
-    
+
+    # Add Multi Player Method
+    # --------------------------------------------------------------------------------
+    # Used to add multiple players to the player list. Unlike the add player method, 
+    # this assumes that the player objects have already been marked chosen and simply
+    # appends them to the list under Player Setup and also adds them to the global
+    # players list. It also takes in a separate reference to a window to close.    
     def addMultiPlayer(self, players, window):
         for player in players:
             self._lstPlayers += [player.name+'\t\t', player.character+'\t\t', player.deck]
@@ -618,7 +735,10 @@ class MBUI(BaseWidget):
             self._scoringPanel.value = win
             win.show()
 
+    # Close Application Callback
     def before_close_event(self):
+        # If we have an executing timer thread, join it before exiting otherwise this
+        # will hang
         if timerThread is not None:
             timerThread.join() 
 

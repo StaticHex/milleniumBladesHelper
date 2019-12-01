@@ -6,6 +6,9 @@ from mbcard import MBType, MBSet, MBCard
 # --------------------------------------------------------------------------------
 # Stub class used to load in data from json file and parse into a dictionary
 class SetLoader:
+    # Default constructor
+    # --------------------------------------------------------------------------------
+    # Loads in data from json file to memory
     def __init__(self):
         # Read in data from json file and store in temporary object
         f = open('./setData.json', 'r')
@@ -34,12 +37,20 @@ class SetLoader:
                             self.setDict[enumSetName] = []
                         self.setDict[enumSetName].append(newCard)
 
+    # Mark Set Chosen Method
+    # --------------------------------------------------------------------------------
+    # Marks a specific set as having been picked before. Prevents a set from being
+    # chosen multiple times
     def markSetChosen(self, setName):
         for curSetName in self.setDict:
             for cardSet in self.setDict[curSetName]:
                 if cardSet.name == setName:
                     cardSet.chosen = True
 
+    # Get Filtered List Method
+    # --------------------------------------------------------------------------------
+    # Returns all entries for a specific category of set with all chosen cards and
+    # all cards belonging to disabled sets filtered out.
     def getFilteredList(self, setType=MBType.UNDEFINED, filters=[]):
         # Add 1 to each filter's index to account for 0 being UNDEFINED
         filters = [x + 1 for x in filters]
@@ -62,7 +73,10 @@ class SetLoader:
         
         # Return filtered list
         return filteredList
-    
+
+    # Clear Player Setup Method
+    # --------------------------------------------------------------------------------
+    # Marks all PLAYER and STARTER cards as unchosen. Essentially resets player setup.
     def clearPlayerSetup(self):
         for curSetName in self.setDict:
             for cardSet in self.setDict[curSetName]:
@@ -70,6 +84,10 @@ class SetLoader:
                     cardSet.getCardType() == MBType.STARTER:
                     cardSet.chosen = False
 
+    # Clear Store Setup Method
+    # --------------------------------------------------------------------------------
+    # Marks all BRONZE, SILVER, GOLD, EXPANSION, PREMIUM, and MASTER cards as
+    # unchosen. Essentially resets the store
     def clearStoreSetup(self):
         for curSetName in self.setDict:
             for cardSet in self.setDict[curSetName]:
