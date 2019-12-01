@@ -5,8 +5,10 @@
 #### **Last Updated:** 12/01/2019
 ---
 #### Dependencies (i.e. things to run pip for)
-pyforms
-playsound
+
+- pyforms
+- playsound
+
 ---
 #### Changelog
 
